@@ -4,33 +4,30 @@
 
 # Divide Two Integers: Solution Explanation
 
-### Approach
-The algorithm solves the division problem by using the concept of bitwise shifts, which effectively mimics long division without using multiplication, division, or modulo operators. By repeatedly doubling the divisor (shifting it left), we can quickly determine how many times it fits into the dividend. This "exponential doubling" approach allows us to subtract large chunks of the divisor from the dividend at once, significantly reducing the number of subtractions required compared to a simple linear approach.
+### Approach Summary
+Since we are forbidden from using multiplication, division, or the modulo operator, we solve this problem using **bit manipulation** and the concept of **repeated subtraction**. Instead of subtracting the divisor one by one (which is too slow), we subtract the divisor multiplied by powers of two. By doubling the divisor (using the left-shift operator `<<`) until it is as large as possible without exceeding the remaining dividend, we can efficiently "chunk" the division, effectively performing long division in binary form. This brings the time complexity down from linear to logarithmic.
 
-### Step-by-step Explanation
+### Step-by-Step Explanation
 
-1.  **Handle Special Cases:**
-    The problem specifies that the quotient must fit within a 32-bit signed integer. The only case where an overflow occurs is when dividing `INT_MIN` (-2,147,483,648) by -1, which results in a positive value exceeding the capacity of a 32-bit integer. We catch this immediately and return `INT_MAX`.
+1.  **Handling Edge Cases and Signs**:
+    *   There is a unique edge case: if the `dividend` is `INT_MIN` and the `divisor` is `-1`, the result would exceed the positive 32-bit integer range (`2^31`), so we manually return `INT_MAX`.
+    *   We determine the final sign of the result by checking if the signs of the dividend and divisor are different using the XOR (`^`) operator. If they are different, the result must be negative.
 
-2.  **Determine the Sign:**
-    We check the signs of the dividend and divisor using the XOR operator (`^`). If one is negative and the other is positive, the result will be negative. Otherwise, it will be positive. We then convert both numbers to absolute values using `long long` to prevent potential overflow issues during calculation.
+2.  **Working with Absolute Values**:
+    *   To simplify calculations, we convert both numbers to `long long` positive values. Using `long long` prevents potential overflow issues when we convert `INT_MIN` (which is `-2^31`) to a positive value (which would be `2^31`, exceeding the `int` limit).
 
-3.  **The "Doubling" Strategy:**
-    Instead of subtracting the divisor one by one (which is too slow), we use a loop to see how many times the divisor can be "doubled" (shifted left) and still be less than or equal to the current dividend. For example, if we are dividing 10 by 3:
-    *   3 shifted left once is 6 (fits into 10).
-    *   6 shifted left once is 12 (too big).
-    *   We subtract 6 from 10, leaving 4, and add the "multiple" (which is 2) to our answer.
+3.  **The Bit-Shifting Logic**:
+    *   We use a `while` loop that continues as long as the current dividend (`a`) is greater than or equal to the divisor (`b`).
+    *   Inside, we use an inner loop to find the largest multiple of the divisor that fits into the current dividend. We repeatedly shift the divisor left (`temp <<= 1`), which is equivalent to multiplying it by 2. We keep track of this multiplier as well, starting at 1 and doubling it each time.
+    *   Once we find the largest shifted value that fits, we subtract that value from our dividend and add the corresponding power of two to our running total quotient (`ans`).
 
-4.  **Iterative Subtraction:**
-    We repeat the doubling process until the remaining dividend is smaller than the divisor. Each iteration effectively finds the largest power of two multiple of the divisor that fits into the current remainder, building up the quotient piece by piece.
-
-5.  **Final Cleanup:**
-    Once the loop finishes, we apply the sign we calculated in step 2. Before returning the final result, we check if the answer is within the valid 32-bit integer range to satisfy the problem's constraints.
+4.  **Finalizing the Result**:
+    *   After the loop finishes, we apply the sign we calculated in step one.
+    *   Finally, we perform a safety check to ensure the result stays within the 32-bit signed integer boundaries (`INT_MIN` to `INT_MAX`) and cast the result back to an `int` before returning.
 
 ### Complexity Analysis
 
-*   **Time Complexity: O((log N)^2)**
-    In each step of the outer `while` loop, we reduce the dividend by at least half of its current value (because we subtract the largest possible shifted divisor). Within the inner loop, we perform a bitwise shift, which is logarithmic relative to the magnitude of the dividend. This results in a logarithmic number of iterations, making the complexity O((log N)^2).
-
-*   **Space Complexity: O(1)**
-    We only use a fixed number of `long long` variables to track the dividend, divisor, and current quotient, regardless of the input size. Thus, the space usage remains constant.
+*   **Time Complexity**: **O(log² N)**, where N is the dividend. 
+    *   In the outer loop, we reduce the dividend exponentially. In each step of the inner loop, we double the divisor. Since we are using bit shifts, the inner loop runs at most 32 times (the number of bits in an integer). Because we are essentially performing binary division, the overall complexity is logarithmic with respect to the input values.
+*   **Space Complexity**: **O(1)**.
+    *   We only use a few constant variables (`a`, `b`, `ans`, `temp`, `multiple`) to track the progress of the division, regardless of how large the input numbers are.
