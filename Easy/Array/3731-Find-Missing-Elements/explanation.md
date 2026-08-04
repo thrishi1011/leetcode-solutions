@@ -1,27 +1,20 @@
 # Find Missing Elements
 
-**Difficulty:** Easy | **Language:** C++
+**Difficulty:** Easy | **Language:** python
 
 # Solution: Find Missing Elements
 
-### Approach Summary
-The algorithm identifies the missing numbers in a range by first determining the boundary values of the input array. By iterating through every integer between the minimum and maximum values found in `nums`, the code checks if each integer exists within the original array. If an integer from this range is not found in the input, it is identified as "missing" and added to a result list. Since we iterate through the range in ascending order, the final list is naturally sorted, ensuring the output meets the problem requirements.
+### Approach
+The algorithm identifies the full range of integers by determining the minimum and maximum values present in the input array. Once the boundaries of the range are established, the program iterates through every integer starting from the minimum to the maximum. During each iteration, it checks whether the current integer exists in the input array; if it is absent, that integer is added to a collection of missing numbers. Finally, the list is sorted and returned.
 
-### Step-by-Step Explanation
+### Step-by-step Explanation
 
-1.  **Find the Range Boundaries:** 
-    Before we can determine what is missing, we need to know the start and end of the sequence. We initialize `minnum` and `maxnum` using the first element of the array. We then iterate through the entire input array, updating `minnum` if we find a smaller value and `maxnum` if we find a larger one. This gives us the full scope of the original range.
-
-2.  **Scan for Missing Values:** 
-    Once we have the boundaries, we use a loop to check every integer `i` starting from `minnum` up to `maxnum`. For every `i`, we perform a "lookup" by iterating through the original `nums` array to see if that specific number is present.
-
-3.  **Collect Results:** 
-    If our lookup loop completes without finding the current integer `i` (signified by our `found` flag remaining `false`), we know that `i` is missing. We add it to our `ans` vector.
-
-4.  **Final Formatting:** 
-    Although the logic of checking the range from `minnum` to `maxnum` ensures the missing numbers are added in increasing order, we apply a sort at the end as a safeguard to guarantee the returned list is perfectly sorted.
+1.  **Identify the Boundaries**: We first determine the `min` and `max` values of the provided `nums` array. These values represent the starting and ending points of the original, complete sequence.
+2.  **Iterate Through the Range**: We use a loop to count every integer between the smallest and largest values (inclusive). 
+3.  **Check for Existence**: For every number in this calculated range, we perform a membership check against the input list. If a number is not found within `nums`, we know it is a "missing" element.
+4.  **Collect and Organize**: We store all identified missing numbers in an `ans` list. Since the loop processes numbers in increasing order, the result will inherently be sorted; however, we call `.sort()` as a safeguard to ensure the output meets the return requirements.
 
 ### Complexity Analysis
 
-*   **Time Complexity:** $O(N \times R)$, where $N$ is the number of elements in `nums` and $R$ is the size of the range (max - min). For each number in the range, we perform a linear scan of the input array. Given the constraints (max 100 elements), this is highly efficient.
-*   **Space Complexity:** $O(R)$, as in the worst-case scenario (where almost all numbers in the range are missing), our `ans` vector will store nearly all integers within the range.
+*   **Time Complexity**: O(N * M), where N is the length of the input array and M is the difference between the maximum and minimum values. This is because, for every number in the range (M), we perform a search in the array (N). Given the small constraints (up to 100), this approach is highly efficient.
+*   **Space Complexity**: O(M), where M is the number of missing integers. In the worst-case scenario (where almost every number is missing), we store nearly the entire range in our results list.
