@@ -1,22 +1,24 @@
 # Single Number II
 
-**Difficulty:** Medium | **Language:** C++
+**Difficulty:** Medium | **Language:** python
 
 # Solution: Single Number II
 
-### Approach Summary
-The provided solution utilizes a hash map (specifically `unordered_map` in C++) to track the frequency of each integer in the array. By iterating through the array once, we build a frequency table that maps every number to the count of its occurrences. After the map is populated, we perform a second pass through the map to identify the unique element, which is the only entry associated with a count of one.
+## Approach Summary
+The provided solution uses a frequency counting approach, leveraging a hash map (dictionary) to track how many times each integer appears in the input array. By iterating through the array once to populate the dictionary and then scanning the dictionary for the entry with a count of one, we can reliably identify the unique element. While this approach is intuitive and efficient for general counting problems, it uses linear extra space to store the frequency map.
 
-### Step-by-step Explanation
-1.  **Initialize a Frequency Map**: We create an empty hash map where the "keys" represent the numbers from the input array, and the "values" represent how many times each number has appeared so far.
-2.  **Count Occurrences**: We loop through every number in the input array. For each number, we update its corresponding count in the map. If the number is already in the map, its count increases; if it is new, it is added with an initial count of one.
-3.  **Identify the Unique Element**: Once the array has been fully processed, we iterate through the key-value pairs stored in the map. Since the problem guarantees that all numbers appear three times except for one, we simply check each entry's value. When we find an entry where the count is exactly one, we have identified our target number and return it immediately.
-4.  **Edge Case**: In the unlikely event that no such number is found (which contradicts the problem constraints), the function returns -1 as a fallback.
+## Step-by-Step Explanation
 
-### Complexity Analysis
-*   **Time Complexity: $O(N)$**
-    *   We iterate through the input array once to populate the map ($O(N)$) and then iterate through the map to find the unique element. In the worst case, the map contains $N/3 + 1$ unique elements, resulting in a linear time complexity.
-*   **Space Complexity: $O(N)$**
-    *   We use a hash map to store the frequencies of the elements. In the worst case, we store nearly all unique elements from the array in the map, leading to linear space usage.
+1.  **Initialize a dictionary:** We create an empty dictionary called `freq` to serve as our record-keeper. The dictionary will store the number from the array as the "key" and its corresponding appearance count as the "value."
+2.  **Count the occurrences:** We loop through each number in the input list `nums`. For every number encountered:
+    *   If the number is already in the dictionary, we increment its current count by 1.
+    *   If the number is not in the dictionary, we add it with an initial count of 1.
+3.  **Identify the unique number:** After the entire list has been processed, the dictionary contains the counts for every distinct number. We then iterate through the dictionary's key-value pairs. Since the problem guarantees that one element appears exactly once while others appear three times, we simply look for the key that has a value of 1.
+4.  **Return the result:** Once the value `1` is found, we return the associated key as our answer.
 
-*Note: While this solution is clear and readable, it uses $O(N)$ extra space. To satisfy the "constant extra space" requirement strictly mentioned in the problem description, one would typically use bit manipulation techniques to count bits at each position modulo 3.*
+## Complexity Analysis
+
+*   **Time Complexity:** O(N), where N is the number of elements in the array. We perform one pass over the array to build the frequency map and one pass over the map to find the unique element. In the worst case, the number of unique elements is proportional to N.
+*   **Space Complexity:** O(N). Because we store each unique element in the dictionary, the space requirement grows linearly with the number of unique elements in the input array.
+
+*Note: While this solution satisfies the functional requirements, the problem constraints often aim for an O(1) space solution using bitwise manipulation (tracking bits that appear once vs. twice). This dictionary-based approach uses linear space.*
