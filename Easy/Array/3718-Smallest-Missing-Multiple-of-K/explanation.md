@@ -1,20 +1,24 @@
 # Smallest Missing Multiple of K
 
-**Difficulty:** Easy | **Language:** Python
+**Difficulty:** Easy | **Language:** cpp
 
-### Approach Summary
-The algorithm uses a brute-force search to identify the smallest multiple of `k` that is not present in the input array. It iteratively generates multiples of `k` starting from $1 \times k$ and checks whether each value exists within the given list. By incrementing a counter and multiplying it by `k` at each step, the algorithm effectively "scans" the sequence of multiples ($k, 2k, 3k, \dots$) and stops as soon as it encounters a value that is missing from the `nums` collection.
+# Solution: Smallest Missing Multiple of K
+
+### Approach
+The problem asks us to find the first positive multiple of $k$ that does not exist within the given array. Since we don't know how large the missing number might be, we use a "brute-force" search approach. We generate multiples of $k$ in increasing order ($k, 2k, 3k, \dots$) and, for each one, perform a linear scan through the input array to check if it exists. The first multiple that fails to appear in the array is our answer, and we return it immediately.
 
 ### Step-by-Step Explanation
 
-1.  **Initialize a Multiplier:** We start with an integer `i = 1`. This variable represents the "step" of the multiple we are currently checking.
-2.  **Continuous Checking:** We enter a `while` loop that checks the condition `i * k in nums`. 
-    *   If the current multiple (e.g., $1 \times k$, $2 \times k$, etc.) is already found inside the `nums` array, we know it is not the missing number we are looking for.
-    *   Consequently, we increment `i` by 1 to move to the next multiple in the sequence.
-3.  **Termination:** The loop continues to run as long as the current multiple exists in the list. Because the list is finite, this loop is guaranteed to terminate once we reach a multiple of `k` that is not present in the array.
-4.  **Return the Result:** As soon as the condition `i * k in nums` becomes `False`, the loop stops. The value `i * k` is the smallest multiple of `k` missing from the array, so we return it.
+1.  **Initialize a multiplier:** We start with a multiplier `i = 1`. This allows us to generate multiples sequentially: first $1 \times k$, then $2 \times k$, and so on.
+2.  **Generate a candidate:** In each iteration of the `while` loop, we calculate `target = i * k`. This represents the current multiple of $k$ we are testing.
+3.  **Search the array:** We use a `for` loop to iterate through every element in `nums`. We check if any element is equal to our `target`.
+    *   If we find the `target` inside the array, we set a flag `found` to `true` and stop searching the rest of the array (using `break`) because we only need to know if the number exists at least once.
+4.  **Check the result:** After checking the entire array, we look at the `found` flag. If it remains `false`, it means our `target` is missing from the list. Since we are checking multiples in increasing order, this must be the *smallest* missing multiple, so we return it.
+5.  **Increment:** If the number was found, we increment `i` and repeat the process to check the next multiple.
 
 ### Complexity Analysis
 
-*   **Time Complexity:** $O(N \cdot M)$, where $N$ is the length of `nums` and $M$ is the number of multiples checked until we find one that is missing. In the worst case, we check each multiple against the entire list, resulting in a linear scan of the array for each multiple tested. Given the constraints (length up to 100), this is very efficient.
-*   **Space Complexity:** $O(1)$. We only use a single integer variable (`i`) to track our progress, regardless of the size of the input array. (Note: Using a `set` to store `nums` would improve look-up time to $O(1)$, but would increase space complexity to $O(N)$).
+*   **Time Complexity: $O(N \times M)$**
+    *   $N$ is the number of elements in `nums` and $M$ is the number of multiples we check until we find the missing one. In the worst case, we might scan the entire array for each multiple until we exceed the maximum value in the array. Given the constraints (values up to 100), this is highly efficient.
+*   **Space Complexity: $O(1)$**
+    *   We only use a few integer variables (`i`, `target`, `found`) regardless of the size of the input array, meaning the memory usage remains constant.
